@@ -47,4 +47,26 @@ public class ValuesRanking : Activity
 
         int currentIndex = 0;
 
-        while (DateTim
+        while (DateTime.Now < endTime && currentIndex < top3.Count)
+        {
+            Console.Write($"\nWhy is \"{top3[currentIndex]}\" important to you? ");
+            string reason = Console.ReadLine();
+
+            reflections.Add($"#{currentIndex + 1}: {top3[currentIndex]} — {reason}");
+            currentIndex++;
+
+            base.Spinner(2);
+        }
+
+        // Display summary
+        Console.WriteLine("\nReflection Summary:");
+        foreach (string line in reflections)
+        {
+            Console.WriteLine(line);
+        }
+
+
+        base.EndMessage();
+        base.Spinner(3);
+    }
+}
