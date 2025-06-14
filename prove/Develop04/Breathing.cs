@@ -8,29 +8,4 @@ public class Breathing:Activity
     {
 
     }
-    public void Run()
-    {
-
-        base.StartMessage();
-        Console.WriteLine();
-
-        DateTime endTime = DateTime.Now.AddSeconds(base.GetDuration());
-
-        while (DateTime.Now < endTime)
-        {
-            Console.Write("Breath in...");
-            base.CountDown(3);
-            Console.WriteLine();
-            Console.Write("Breath Out...");
-            base.CountDown(4);
-            Console.WriteLine();
-            Console.WriteLine();
-
-        }
-       
-        base.EndMessage();
-        base.Spinner(3);
-}
-
-    
-}
+    pu

@@ -13,7 +13,7 @@ public class Activity
         _name = name;
         _description = description;
         _duration = 0;
-        
+
     }
     public void StartMessage()
     {
@@ -22,8 +22,9 @@ public class Activity
         Console.Write($"\nHow long (Seconds), would you like for your session? ");
         _duration = int.Parse(Console.ReadLine());
         Console.Clear();
-        Console.Write("Get Ready...");
-        Spinner(4);
+        Console.Write("Get Ready");
+        CountPeriods(4);
+        Console.Clear();
     }
     public int GetDuration()
     {
@@ -68,7 +69,7 @@ public class Activity
             Thread.Sleep(1000);
             // Console.Write("\b \b");
         }
-        
+
     }
 
 
