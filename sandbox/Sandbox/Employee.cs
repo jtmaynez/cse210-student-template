@@ -79,4 +79,12 @@ public class Program
         employees.Add(new SalaryEmployee("Emma Davis"));
         employees.Add(new HourlyEmployee("Micah Earl"));
 
-        // Get a
+        // Get a custom calculation for each one
+        foreach (Employee employee in employees)
+        {
+            string name = employee.GetEmployeeName();
+            float pay = employee.CalculatePay();
+            Console.WriteLine($"{name} {pay}");
+        }
+    }
+}
