@@ -1,3 +1,6 @@
 64
 Simple Goal|ggg|gggg|4|True
 CheckList Goal|kkk|kkkk|50|5|2|2
+Simple Goal|jjjjj|eee|5|False
+CheckList Goal|tttt|er|5|3|2|0
+Eternal Goal|jjrjrjr|jjj|50
