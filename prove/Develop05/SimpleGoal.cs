@@ -2,7 +2,6 @@ public class SimpleGoal : Goal
 {
     private bool _isComplete;
 
-
     public SimpleGoal(string name, string description, int points, bool isComplete = false) : base(name, description, points)
     {
         _isComplete = isComplete;
@@ -17,10 +16,12 @@ public class SimpleGoal : Goal
     {
         return _isComplete;
     }
+
     public override void Display()
     {
         Console.WriteLine($"[{(IsComplete() ? 'X' : ' ')}] {GetName()} ({GetDescription()})");
     }
+
     public override int RecordEvent()
     {
         if (_isComplete == true)

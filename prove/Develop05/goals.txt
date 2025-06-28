@@ -1,0 +1,7 @@
+200
+Simple Goal|i|r|50|True
+Eternal Goal|jj|rr|20
+CheckList Goal|rrrr|rrrr|100|10|2|2
+Simple Goal|fjfj|jrje|10|False
+Eternal Goal|ajae|ejrae|50
+CheckList Goal|difie|ejjia|50|10|3|1

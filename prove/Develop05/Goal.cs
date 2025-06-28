@@ -12,6 +12,7 @@ public abstract class Goal
         _points = points;
 
     }
+
     public virtual int RecordEvent()
     {
         if (IsComplete())
@@ -26,7 +27,6 @@ public abstract class Goal
     }
 
     public abstract bool IsComplete();
-
 
     public string GetName()
     {
