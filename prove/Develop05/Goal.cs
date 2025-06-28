@@ -14,7 +14,15 @@ public abstract class Goal
     }
     public virtual int RecordEvent()
     {
-        return _points;
+        if (IsComplete())
+        {
+
+            return _points;
+        }
+        else
+        {
+            return 0;
+        }
     }
 
     public abstract bool IsComplete();

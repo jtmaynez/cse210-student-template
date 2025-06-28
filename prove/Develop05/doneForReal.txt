@@ -1,0 +1,4 @@
+200
+Simple Goal|ejfjew|efefagr|20|True
+Eternal Goal|fjafj;sg|aergtrewerfghgfdf|100
+CheckList Goal|uytreswdfgvb|dfghjhgfds|500|20|5|0

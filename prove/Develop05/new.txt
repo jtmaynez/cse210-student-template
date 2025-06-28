@@ -1,2 +1,3 @@
 0
 Simple Goal|eat food|eating my food for dinner|40|False
+Eternal Goal|egfw|dfsghed|18

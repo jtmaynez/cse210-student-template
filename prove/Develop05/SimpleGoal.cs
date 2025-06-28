@@ -21,4 +21,14 @@ public class SimpleGoal : Goal
     {
         Console.WriteLine($"[{(IsComplete() ? 'X' : ' ')}] {GetName()} ({GetDescription()})");
     }
+    public override int RecordEvent()
+    {
+        if (_isComplete == true)
+        {
+            Console.WriteLine("Congrats you completed this simple goal.");
+            return 0;
+        }
+        _isComplete = true;
+        return base.RecordEvent();
+    }
 }

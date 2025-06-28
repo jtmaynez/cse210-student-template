@@ -19,4 +19,10 @@ public class EternalGoal : Goal
     {
         Console.WriteLine($"[ ] {GetName()} ({GetDescription()})");
     }
+
+    public override int RecordEvent()
+    {
+        return _points;
+       
+    }
 }

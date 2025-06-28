@@ -15,7 +15,7 @@ public class ChecklistGoal : Goal
 
     public override bool IsComplete()
     {
-        return false;
+        return _iteration == _currentIteration;
     }
     public override string GetFormat()
     {
@@ -24,5 +24,20 @@ public class ChecklistGoal : Goal
     public override void Display()
     {
         Console.WriteLine($"[{(_iteration == _currentIteration ? 'X' : ' ')}] {GetName()} ({GetDescription()}) --Currently Completed:{_currentIteration}/{_iteration} ");
+    }
+        public override int RecordEvent()
+    {
+        
+        if (_currentIteration == _iteration)
+        {
+            Console.WriteLine("Congrats you completed this checklist goal.");
+            return 0;
+        }
+
+
+        _currentIteration = _currentIteration + 1;
+
+
+        return base.RecordEvent() + _bonusPoints;
     }
 }

@@ -45,10 +45,7 @@ class Program
                     switch (goalType)
                     {
                         case "1":
-                            Console.Write("Is this goal completed? ");
-                            string userInput = Console.ReadLine();
-                            bool isComplete = string.Equals(userInput, "yes", StringComparison.OrdinalIgnoreCase);
-                            SimpleGoal sg = new SimpleGoal(goalName, goalDescription, goalPoints, isComplete);
+                            SimpleGoal sg = new SimpleGoal(goalName, goalDescription, goalPoints);
                             goals.Add(sg);
                             break;
 
@@ -70,9 +67,11 @@ class Program
                     break;
 
                 case "2":
-                    foreach (Goal goal in goals)
+                    for (int i = 0; i < goals.Count; i++)
                     {
-                        goal.Display();
+                        Goal numberedGoal = goals[i];
+                        Console.Write($"{i+1}.");
+                        numberedGoal.Display(); 
                     }
                     break;
 
@@ -87,12 +86,11 @@ class Program
                     break;
 
                 case "5":
-                    Console.WriteLine("What goal do you want to record? ");
-                    string listedGoal = Console.ReadLine();
-
-                    // Code to find the listed goal and then call record event
-                    //which goal you want
-                    // for loop
+                    Console.Write("What goal do you want to record? ");
+                    int goalNumber = int.Parse(Console.ReadLine()) -1;
+                    int earnedPoints = goals[goalNumber].RecordEvent() ;
+                    totalPoints = totalPoints + earnedPoints ; // This will also record it as well Is a side effect
+                    Console.WriteLine($"You earned {earnedPoints}");            
                     break;
 
                 case "6":
