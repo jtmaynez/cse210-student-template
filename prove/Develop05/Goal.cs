@@ -45,6 +45,6 @@ public abstract class Goal
     }
 
     public abstract void Display();
- 
+    public int GetPoints() => _points; 
 }
 

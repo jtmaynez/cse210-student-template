@@ -30,12 +30,16 @@ public class ChecklistGoal : Goal
         
         if (_currentIteration == _iteration)
         {
-            Console.WriteLine("Congrats you completed this checklist goal.");
+            Console.WriteLine("You already completed this goal.");
             return 0;
         }
 
-
         _currentIteration = _currentIteration + 1;
+        if (_currentIteration == _iteration)
+        {
+            Console.WriteLine("Congrats you completed this checklist goal.");
+                
+        }
 
 
         return base.RecordEvent() + _bonusPoints;

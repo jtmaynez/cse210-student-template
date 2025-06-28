@@ -1,6 +1,7 @@
 using System;
 
-// Create Menu, prompt users for the specific goals, 
+// My creative exceed expectation is 6 where it filters and sorts based on code I've looked up. 
+//I also created some Error Handling for most of my code where errors can be entered by the user. 
 class Program
 {
     public static void Main(string[] args)
@@ -19,13 +20,15 @@ class Program
             Console.WriteLine("3. Save Goals");
             Console.WriteLine("4. Load Goals");
             Console.WriteLine("5. Record Event");
-            Console.WriteLine("6. Quit");
+            Console.WriteLine("6. Filter & Sort");
+            Console.WriteLine("7. Quit");
             Console.Write("Select a choice from the menu: ");
             string choice = Console.ReadLine();
 
             switch (choice)
             {
                 case "1":
+                    Console.Clear();
                     Console.WriteLine("The types of Goals are:");
                     Console.WriteLine("1. Simple Goal");
                     Console.WriteLine("2. Eternal Goal");
@@ -63,45 +66,130 @@ class Program
                             ChecklistGoal cg = new ChecklistGoal(goalName, goalDescription, goalPoints, bonusPoint, iteration, 0);
                             goals.Add(cg);
                             break;
+                        default:
+                            Console.WriteLine("Invalid option. Please try again.");
+                            Thread.Sleep(1500);
+                            break;
                     }
+                    Console.Clear();
                     break;
 
-                case "2":
+                case "2": //List
+                    Console.Clear();
                     for (int i = 0; i < goals.Count; i++)
                     {
                         Goal numberedGoal = goals[i];
-                        Console.Write($"{i+1}.");
-                        numberedGoal.Display(); 
+                        Console.Write($"{i + 1}.");
+                        numberedGoal.Display();
                     }
                     break;
 
-                case "3":
+                case "3": // Save
+                    Console.Clear();
                     SaveGoals(goals, totalPoints);
+                    Console.WriteLine("Goals successfully saved!");
                     break;
 
-                case "4":
-                    (List<Goal> goals, int points) load = LoadGoals();
-                    goals = load.goals;
-                    totalPoints = load.points;
+                case "4": // Load
+                    Console.Clear();
+                    try
+                    {
+                        (List<Goal> loadedGoals, int loadedPoints) = LoadGoals();
+                        goals = loadedGoals;
+                        totalPoints = loadedPoints;
+                        Console.WriteLine("Goals successfully loaded!");
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Error loading goals: {ex.Message}");
+                    }
                     break;
 
-                case "5":
+
+                case "5": // Record
+                    // Console.Clear();
+                    if (goals.Count == 0)
+                    {
+                        Console.WriteLine("No goals available to record.");
+                        break;
+                    }
+
                     Console.Write("What goal do you want to record? ");
-                    int goalNumber = int.Parse(Console.ReadLine()) -1;
-                    int earnedPoints = goals[goalNumber].RecordEvent() ;
-                    totalPoints = totalPoints + earnedPoints ; // This will also record it as well Is a side effect
-                    Console.WriteLine($"You earned {earnedPoints}");            
+                    string input = Console.ReadLine();
+                    try
+                    {
+                        int goalNumber = int.Parse(input) - 1;
+
+                        if (goalNumber < 0 || goalNumber >= goals.Count)
+                        {
+                            Console.WriteLine("Invalid goal number.");
+                        }
+                        else
+                        {
+                            int earnedPoints = goals[goalNumber].RecordEvent();
+                            totalPoints += earnedPoints;
+                            Console.WriteLine($"You earned {earnedPoints} points!");
+                        }
+                    }
+                    catch (FormatException)
+                    {
+                        Console.WriteLine("Please enter a valid number.");
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"An error occurred: {ex.Message}");
+                    }
+
                     break;
 
-                case "6":
+                case "6": // Filter/Sort
+                    Console.Clear();
+                    Console.WriteLine("1. Show only completed goals");
+                    Console.WriteLine("2. Show only incomplete goals");
+                    Console.WriteLine("3. Sort by point value");
+                    Console.WriteLine("4. Show only checklist goals");
+                    Console.Write("Choose a filter/sort option: ");
+                    string filterOption = Console.ReadLine();
+
+                    List<Goal> filtered = new List<Goal>();
+
+                    switch (filterOption)
+                    {
+                        case "1":
+                            filtered = goals.Where(g => g.IsComplete()).ToList();
+                            break;
+                        case "2":
+                            filtered = goals.Where(g => !g.IsComplete()).ToList();
+                            break;
+                        case "3":
+                            filtered = goals.OrderByDescending(g => g.GetPoints()).ToList();
+                            break;
+                        case "4":
+                            filtered = goals.Where(g => g is ChecklistGoal).ToList();
+                            break;
+                        default:
+                            Console.WriteLine("Invalid choice.");
+                            break;
+                    }
+
+                    foreach (var goal in filtered)
+                    {
+                        goal.Display();
+                    }
+                    break;
+
+                case "7": // Quit
+                    Console.Clear();
                     Console.WriteLine("Goodbye!");
                     running = false;
-                    break;
+                    break;     
 
                 default:
+                    Console.Clear();
                     Console.WriteLine("Invalid option. Please try again.");
                     Thread.Sleep(1500);
                     break;
+                    
             }
         }
 

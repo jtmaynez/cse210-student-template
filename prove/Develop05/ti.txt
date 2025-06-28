@@ -1,0 +1,3 @@
+64
+Simple Goal|ggg|gggg|4|True
+CheckList Goal|kkk|kkkk|50|5|2|2
