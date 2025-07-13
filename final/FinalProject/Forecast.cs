@@ -1,44 +1,30 @@
-abstract class Forecast
+#nullable enable // dont know if this is correct
+public abstract class Forecast
 {
 
-    protected List<int[]> _data;
+    protected DataHistory _data;
 
-    // read data first
-    // Extract Monthly
-    // Extract Qrty
-    // Extract Yearly
-    public abstract int MovingAverage();
-
-    public abstract int WeightedAverage();
-
-
-    public abstract int Smoothing();
-
-    public int Solve();
-
-    public virtual int MAD(int type)
+    public Forecast() // Put filename in paramater if asking user for a filename
     {
-        int avg = type switch
-        {
-            0 => MovingAverage(),
-            1 => WeightedAverage(),
-            2 => Smoothing(),
-            _ => throw new ArgumentException("no")
-
-
-        };
-        //return Math.Abs(_data - int)
-
+        _data = new("QtySold.csv");
     }
-    public int MAPE(int type)
-    {
-        int avg = type switch
-        {
-            0 => MovingAverage(),
-            1 => WeightedAverage(),
-            2 => Smoothing(),
-            _ => throw new ArgumentException("no")
-        };
+    public abstract int Calculate(int year, int? month = null, int? quarter = null, double[]? weights = null, double? alpha = null
+    );
+
+    public double MAD(int forecast, int year, int? month = null, int? quarter = null)
+    { // bellow is a shortcut for if statements
+        int actual = month.HasValue
+            ? _data.GetMonth(year, month.Value)
+            : quarter.HasValue
+                ? _data.GetQuarterly(year, quarter.Value)
+                : _data.GetYear(year);
+
+        return Math.Abs(actual - forecast);
     }
 
-}
+    public double MAPE(int forecast, int year, int? month = null, int? quarter = null)
+    {
+        int actual = month.HasValue
+            ? _data.GetMonth(year, month.Value)
+            : quarter.HasValue
+       

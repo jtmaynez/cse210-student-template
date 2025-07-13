@@ -5,7 +5,8 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>disable</Nullable>
+    <Nullable>disable</Nullable> 
+    <!-- is enabling allowed for project? -->
   </PropertyGroup>
 
 </Project>
