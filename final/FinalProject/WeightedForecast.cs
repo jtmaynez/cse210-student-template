@@ -35,4 +35,18 @@ public override int Calculate(int year, int? month = null, int? quarter = null, 
     else
     {
         data = new int[] {
-            _dat
+            _data.GetYear(year - 3),
+            _data.GetYear(year - 2),
+            _data.GetYear(year - 1)
+        };
+    }
+
+    double forecast = 0;
+    for (int i = 0; i < 3; i++)
+        forecast += data[i] * weights[i];
+
+    return (int)Math.Round(forecast);
+;
+}
+
+}
