@@ -29,20 +29,4 @@ public override int Calculate(int year, int? month = null, int? quarter = null, 
         {
             var qi = GetPreviousQuarter(year, quarter.Value, i);
             int actual = _data.GetQuarterly(qi.year, qi.quarter);
-            prevSmoothed = prevSmoothed + alpha.Value * (actual - prevSmoothed);
-        }
-    }
-    else
-    {
-        prevSmoothed = _data.GetYear(year - 3);
-        for (int i = 2; i >= 1; i--)
-        {
-            int actual = _data.GetYear(year - i);
-            prevSmoothed = prevSmoothed + alpha.Value * (actual - prevSmoothed);
-        }
-    }
-
-    return (int)Math.Round(prevSmoothed);
-}
-
-}
+            prevSmoot
