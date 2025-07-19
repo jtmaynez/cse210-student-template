@@ -9,7 +9,8 @@ class Program
             Console.WriteLine("\nWelcome to your Supply Chain Management System!");
             Console.WriteLine("1. Create a Forecast");
             Console.WriteLine("2. Calculate Inventory Equation");
-            Console.WriteLine("3. Quit");
+            Console.WriteLine("3. Classify Inventory");
+            Console.WriteLine("4. Quit");
             Console.Write("What do you want to do: ");
             string menuChoice = Console.ReadLine();
 
@@ -20,15 +21,19 @@ class Program
                     break;
 
                 case "2":
-                    Console.WriteLine("Inventory section coming soon");
+                    RunInventoryCalculator();
                     break;
 
                 case "3":
+                    RunABCClassification();
+                    break;
+
+                case "4":
                     Console.WriteLine("Goodbye!");
                     return;
 
                 default:
-                    Console.WriteLine("Invalid choice. Please enter 1, 2, or 3.");
+                    Console.WriteLine("Invalid choice. Please enter 1, 2, 3, or 4.");
                     break;
             }
         }
@@ -38,11 +43,12 @@ class Program
     {
         try
         {
+            Console.Clear();
             Console.WriteLine("Select Timeframe you want to Forecast:");
             Console.WriteLine("1. Yearly Forecast");
             Console.WriteLine("2. Quarterly Forecast");
             Console.WriteLine("3 . Monthly Forecast");
-            Console.Write("Enter Timeframe:");
+            Console.Write("Enter Timeframe: ");
             string timeframeChoice = Console.ReadLine();
 
             Console.Write("Enter year (e.g. 2015-2024): ");
@@ -118,7 +124,7 @@ class Program
             double smMape = actual != 0 ? (double)smMad / actual * 100 : 0;
 
             Console.WriteLine("\nCalculating forecast...");
-            Thread.Sleep(2000); // delay in milliseconds (1200 = 1.2 seconds)
+            Thread.Sleep(2000); 
 
             Console.WriteLine();
             Console.WriteLine($"Forecast Comparison for {label}");
@@ -133,5 +139,101 @@ class Program
             Console.WriteLine($"Something went wrong: {ex.Message}");
             Console.WriteLine("Returning to main menu...");
         }
+    }
+   static void RunInventoryCalculator()
+    {
+        try
+        {
+            Console.Write("Enter annual demand: ");
+            double demand = double.Parse(Console.ReadLine());
+
+            Console.Write("Enter holding cost per unit: ");
+            double holdingCost = double.Parse(Console.ReadLine());
+
+            Console.Write("Enter ordering cost: ");
+            double orderingCost = double.Parse(Console.ReadLine());
+
+            Console.Write("Enter lead time (in days or weeks): ");
+            double leadTime = double.Parse(Console.ReadLine());
+
+            Console.Write("Enter standard deviation of demand: ");
+            double stdDev = double.Parse(Console.ReadLine());
+
+            // Use default z-score of 1.65
+            var calc = new InventoryCalculator(demand, holdingCost, orderingCost, leadTime, stdDev);
+
+            Console.WriteLine("\nCalculating inventory metrics...");
+            Thread.Sleep(1200);
+
+            Console.WriteLine("\nInventory Metrics Summary");
+            Console.WriteLine("--------------------------------------------");
+            Console.WriteLine($"EOQ:                     {calc.CalculateEOQ():F2}");
+            Console.WriteLine($"Average Inventory:       {calc.CalculateAverageInventory():F2}");
+            Console.WriteLine($"Holding Cost:            ${calc.CalculateHoldingCost():F2}");
+            Console.WriteLine($"Safety Stock:            {calc.CalculateSafetyStock():F2}");
+            Console.WriteLine($"Recommended Order Qty:   {calc.CalculateOrderQuantity():F2}");
+            Console.WriteLine($"Cycle Time (days):       {calc.CalculateCycleTime():F2}");
+            Console.WriteLine($"Reorder Point (units):   {calc.CalculateReorderPoint():F2}");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"\nError: {ex.Message}");
+            Console.WriteLine("Returning to main menu...");
+        }
+    }
+    static void RunABCClassification()
+    {
+        var abc = new ABCClassifier();
+
+        Console.WriteLine("Enter inventory items and their annual usage value.");
+        Console.WriteLine("Type 'done' when finished.\n");
+
+        while (true)
+        {
+            Console.Write("Enter item name (or 'done'): ");
+            string name = Console.ReadLine();
+
+            if (name.ToLower() == "done")
+                break;
+
+            Console.Write("Enter annual usage value (e.g., cost × demand): ");
+            if (double.TryParse(Console.ReadLine(), out double usageValue))
+            {
+                abc.AddItem(name, usageValue);
+            }
+            else
+            {
+                Console.WriteLine("Invalid number. Try again.");
+            }
+        }
+
+        if (abc == null)
+        {
+            Console.WriteLine("No items were added.");
+            return;
+        }
+
+        abc.ClassifyItems();
+
+        void DisplayCategory(string label, List<InventoryItem> items)
+        {
+            Console.WriteLine($"\nCategory {label} Items:");
+            if (items.Count == 0)
+            {
+                Console.WriteLine("  None");
+                return;
+            }
+            foreach (var item in items)
+            {
+                Console.WriteLine($"  {item._name,-20} Value: {item._annualUsageValue:C2}");
+            }
+        }
+        Console.WriteLine("\nCalculating ABC Classification...");
+        Thread.Sleep(2000); 
+        Console.WriteLine("\nABC Classification Results:");
+        Console.WriteLine("----------------------------");
+        DisplayCategory("A", abc.GetCategoryAItems());
+        DisplayCategory("B", abc.GetCategoryBItems());
+        DisplayCategory("C", abc.GetCategoryCItems());
     }
 }

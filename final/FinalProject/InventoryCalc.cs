@@ -1,51 +1,63 @@
 public class InventoryCalculator
 {
-    // Fields or properties for inputs (can be public, private, or properties later)
-    private double demand;
-    private double holdingCostPerUnit;
-    private double orderingCost;
-    private double leadTime;
-    private double stdDevDemand;
 
-    // Constructor
-    public InventoryCalculator()
+    private double _demand;
+    private double _holdingCostPerUnit;
+    private double _orderingCost;
+    private double _leadTime;
+    private double _stdDevDemand;
+    private double _zScore;
+
+    public InventoryCalculator(double demand, double holdingCost, double orderingCost, double leadTime, double stdDev, double zScore = 1.65)
     {
-        // Empty for now
+        _demand = demand;
+        _holdingCostPerUnit = holdingCost;
+        _orderingCost = orderingCost;
+        _leadTime = leadTime;
+        _stdDevDemand = stdDev;
+        _zScore = zScore;
     }
 
-    // EOQ Calculation
+   // EOQ = sqrt((2 * D * S) / H)
     public double CalculateEOQ()
     {
-        return 0; // placeholder
+        return Math.Sqrt(2 * _demand * _orderingCost / _holdingCostPerUnit);
     }
 
-    // Average Quantity Held
+    // Average Inventory = EOQ / 2
     public double CalculateAverageInventory()
     {
-        return 0;
+        return CalculateEOQ() / 2;
     }
 
-    // Holding Cost
+    // Holding Cost = Average Inventory × Holding Cost Per Unit
     public double CalculateHoldingCost()
     {
-        return 0;
+        return CalculateAverageInventory() * _holdingCostPerUnit;
     }
 
-    // Annual Holding Cost
-    public double CalculateAnnualHoldingCost()
-    {
-        return 0;
-    }
-
-    // Safety Stock
+    // Safety Stock = z × σ × sqrt(lead time)
     public double CalculateSafetyStock()
     {
-        return 0;
+        return _zScore * _stdDevDemand * Math.Sqrt(_leadTime);
     }
 
-    // Order Quantity
+    // Total Order Quantity = EOQ + Safety Stock
     public double CalculateOrderQuantity()
     {
-        return 0;
+        return CalculateEOQ() + CalculateSafetyStock();
+    }
+    // Cycle Time = EOQ / daily demand
+    public double CalculateCycleTime()
+    {
+        double dailyDemand = _demand / 365.0;
+        return CalculateEOQ() / dailyDemand; // returns in days
+    }
+
+    // Reorder Point = (daily demand × lead time) + safety stock
+    public double CalculateReorderPoint()
+    {
+        double dailyDemand = _demand / 365.0;
+        return (dailyDemand * _leadTime) + CalculateSafetyStock();
     }
 }

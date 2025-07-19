@@ -3,8 +3,8 @@ public abstract class Forecast
 
     protected DataHistory _data;
     protected int _year;
-    protected int? _month;
-    protected int? _quarter;
+    protected int _month;
+    protected int _quarter;
 
     public Forecast() // Put filename in paramater if asking user for a filename
     {

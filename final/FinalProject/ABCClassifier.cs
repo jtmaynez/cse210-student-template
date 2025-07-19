@@ -1,53 +1,45 @@
-using System.Collections.Generic;
-
 public class ABCClassifier
 {
-    // Represents an item with a name and annual usage value (e.g., cost * demand)
-    public class InventoryItem
-    {
-        public string Name { get; set; }
-        public double AnnualUsageValue { get; set; }
-
-        public InventoryItem(string name, double annualUsageValue)
-        {
-            Name = name;
-            AnnualUsageValue = annualUsageValue;
-        }
-    }
-
     private List<InventoryItem> items;
+    private List<InventoryItem> categoryA = new();
+    private List<InventoryItem> categoryB = new();
+    private List<InventoryItem> categoryC = new();
 
-    // Constructor
     public ABCClassifier()
     {
         items = new List<InventoryItem>();
     }
 
-    // Add inventory item
     public void AddItem(string name, double annualUsageValue)
     {
-        // stub
+        items.Add(new InventoryItem(name, annualUsageValue));
     }
 
-    // Perform classification into A/B/C groups
     public void ClassifyItems()
     {
-        // stub
+        categoryA.Clear();
+        categoryB.Clear();
+        categoryC.Clear();
+
+        var sortedItems = items.OrderByDescending(i => i._annualUsageValue).ToList();
+        double totalValue = sortedItems.Sum(i => i._annualUsageValue);
+        double cumulative = 0;
+
+        foreach (var item in sortedItems)
+        {
+            cumulative += item._annualUsageValue;
+            double percent = cumulative / totalValue;
+
+            if (percent <= 0.7)
+                categoryA.Add(item);
+            else if (percent <= 0.9)
+                categoryB.Add(item);
+            else
+                categoryC.Add(item);
+        }
     }
 
-    // Optionally get items by category
-    public List<InventoryItem> GetCategoryAItems()
-    {
-        return new List<InventoryItem>(); // placeholder
-    }
-
-    public List<InventoryItem> GetCategoryBItems()
-    {
-        return new List<InventoryItem>(); // placeholder
-    }
-
-    public List<InventoryItem> GetCategoryCItems()
-    {
-        return new List<InventoryItem>(); // placeholder
-    }
+    public List<InventoryItem> GetCategoryAItems() => categoryA;
+    public List<InventoryItem> GetCategoryBItems() => categoryB;
+    public List<InventoryItem> GetCategoryCItems() => categoryC;
 }
