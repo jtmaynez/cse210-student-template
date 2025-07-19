@@ -4,109 +4,134 @@ class Program
 {
     static void Main(string[] args)
     {
-        Console.WriteLine("Welcome to your Supply Chain Management System!");
-        Console.WriteLine("1. Create a Forecast ");
-        Console.WriteLine("2. Calculate Inventory Equation ");
-        Console.Write("What do you want to do: ");
-        string menuChoice = Console.ReadLine();
-
-        switch (menuChoice)
+        while (true)
         {
-            case "1":
-                RunForecast();
-                break;
+            Console.WriteLine("\nWelcome to your Supply Chain Management System!");
+            Console.WriteLine("1. Create a Forecast");
+            Console.WriteLine("2. Calculate Inventory Equation");
+            Console.WriteLine("3. Quit");
+            Console.Write("What do you want to do: ");
+            string menuChoice = Console.ReadLine();
 
-            case "2":
-                // Inventory feature coming soon
-                Console.WriteLine("Inventory section coming soon");
-                break;
+            switch (menuChoice)
+            {
+                case "1":
+                    RunForecast();
+                    break;
+
+                case "2":
+                    Console.WriteLine("Inventory section coming soon");
+                    break;
+
+                case "3":
+                    Console.WriteLine("Goodbye!");
+                    return;
+
+                default:
+                    Console.WriteLine("Invalid choice. Please enter 1, 2, or 3.");
+                    break;
+            }
         }
     }
 
     static void RunForecast()
     {
-        int forecastChoice = PromptForecastType();
-        int timeChoice = PromptTimeFrame();
-        int year = PromptYear();
-
-        int? month = null;
-        int? quarter = null;
-        double[] weights = null;
-        double? alpha = null;
-
-        if (timeChoice == 1)
-            month = PromptMonth();
-        else if (timeChoice == 2)
-            quarter = PromptQuarter();
-
-        Forecast forecast = forecastChoice switch
+        try
         {
-            1 => new MovingForecast(),
-            2 => new WeightedAverageForecast(),
-            3 => new SmoothingForecast(),
-            _ => throw new Exception("Invalid Forecast Choice")
-        };
+            Console.WriteLine("Select Timeframe you want to Forecast:");
+            Console.WriteLine("1. Yearly Forecast");
+            Console.WriteLine("2. Quarterly Forecast");
+            Console.WriteLine("3 . Monthly Forecast");
+            Console.Write("Enter Timeframe:");
+            string timeframeChoice = Console.ReadLine();
 
-        if (forecast is WeightedAverageForecast)
-            weights = PromptWeights();
-        else if (forecast is SmoothingForecast)
-            alpha = PromptAlpha();
+            Console.Write("Enter year (e.g. 2015-2024): ");
+            int year = int.Parse(Console.ReadLine());
 
-        int forecasted = forecast.Calculate(year, month, quarter, weights, alpha);
-        double mad = forecast.MAD(forecasted, year, month, quarter);
-        double mape = forecast.MAPE(forecasted, year, month, quarter);
+            Console.Write("Enter 3 weights separated by commas (e.g. 0.2,0.3,0.5): ");
+            string[] weightStrings = Console.ReadLine().Split(',');
+            double[] weights = Array.ConvertAll(weightStrings, double.Parse);
 
-        Console.WriteLine($"\nForecast: {forecasted}");
-        Console.WriteLine($"MAD: {mad}");
-        Console.WriteLine($"MAPE: {mape:P1}\n");
-    }
+            Console.Write("Enter smoothing alpha (e.g. 0.25): ");
+            double alpha = double.Parse(Console.ReadLine());
 
-    static int PromptForecastType()
-    {
-        Console.WriteLine("1. Moving Average");
-        Console.WriteLine("2. Weighted Average");
-        Console.WriteLine("3. Smoothing");
-        Console.Write("Choose forecast type: ");
-        return int.Parse(Console.ReadLine());
-    }
+            var moving = new MovingForecast();
+            var weighted = new WeightedAverageForecast(weights);
+            var smoothing = new SmoothingForecast(alpha);
+            var dataHistory = new DataHistory("QtySold.csv");
 
-    static int PromptTimeFrame()
-    {
-        Console.WriteLine("1. Monthly");
-        Console.WriteLine("2. Quarterly");
-        Console.WriteLine("3. Yearly");
-        Console.Write("Choose time frame: ");
-        return int.Parse(Console.ReadLine());
-    }
+            int actual = 0, mvForecast = 0, wtForecast = 0, smForecast = 0;
+            string label = "";
 
-    static int PromptYear()
-    {
-        Console.Write("Enter year (e.g. 2023): ");
-        return int.Parse(Console.ReadLine());
-    }
+            if (timeframeChoice == "1") // Year
+            {
+                mvForecast = moving.Calculate(year);
+                wtForecast = weighted.Calculate(year);
+                smForecast = smoothing.Calculate(year);
+                actual = dataHistory.GetYear(year);
+                label = year.ToString();
+            }
+            else if (timeframeChoice == "2") // Quarter
+            {
+                Console.Write("Enter quarter (1-4): ");
+                if (!int.TryParse(Console.ReadLine(), out int qNum) || qNum < 1 || qNum > 4)
+                {
+                    Console.WriteLine("Invalid quarter. Must be between 1 and 4.");
+                    return;
+                }
 
-    static int PromptMonth()
-    {
-        Console.Write("Enter month (1–12): ");
-        return int.Parse(Console.ReadLine());
-    }
+                Quarter quarter = (Quarter)(qNum - 1);
+                mvForecast = moving.Calculate(year, quarter);
+                wtForecast = weighted.Calculate(year, quarter);
+                smForecast = smoothing.Calculate(year, quarter);
+                actual = dataHistory.GetQuarterly(year, quarter);
+                label = $"Q{qNum} {year}";
+            }
+            else if (timeframeChoice == "3") // Month
+            {
+                Console.Write("Enter month number (1-12): ");
+                if (!int.TryParse(Console.ReadLine(), out int monthNum) || monthNum < 1 || monthNum > 12)
+                {
+                    Console.WriteLine("Invalid month number. Please enter a number from 1 to 12.");
+                    return;
+                }
 
-    static int PromptQuarter()
-    {
-        Console.Write("Enter quarter (1–4): ");
-        return int.Parse(Console.ReadLine());
-    }
+                Month month = (Month)(monthNum - 1);
+                mvForecast = moving.Calculate(year, month);
+                wtForecast = weighted.Calculate(year, month);
+                smForecast = smoothing.Calculate(year, month);
+                actual = dataHistory.GetMonth(year, month);
+                label = $"{month} {year}";
+            }
+            else
+            {
+                Console.WriteLine("Invalid timeframe selection.");
+                return;
+            }
 
-    static double[] PromptWeights()
-    {
-        Console.Write("Enter 3 weights separated by space (e.g. 0.5 0.3 0.2): ");
-        return Console.ReadLine().Split(" ").Select(double.Parse).ToArray();
-    }
+            int mvMad = Math.Abs(actual - mvForecast);
+            int wtMad = Math.Abs(actual - wtForecast);
+            int smMad = Math.Abs(actual - smForecast);
 
+            double mvMape = actual != 0 ? (double)mvMad / actual * 100 : 0;
+            double wtMape = actual != 0 ? (double)wtMad / actual * 100 : 0;
+            double smMape = actual != 0 ? (double)smMad / actual * 100 : 0;
 
-    static double PromptAlpha()
-    {
-        Console.Write("Enter alpha (0 < α < 1): ");
-        return double.Parse(Console.ReadLine());
+            Console.WriteLine("\nCalculating forecast...");
+            Thread.Sleep(2000); // delay in milliseconds (1200 = 1.2 seconds)
+
+            Console.WriteLine();
+            Console.WriteLine($"Forecast Comparison for {label}");
+            Console.WriteLine("--------------------------------------------");
+            Console.WriteLine($"Moving Avg:   Forecast = {mvForecast}, MAD = {mvMad}, MAPE = {mvMape:F2}%");
+            Console.WriteLine($"Weighted Avg: Forecast = {wtForecast}, MAD = {wtMad}, MAPE = {wtMape:F2}%");
+            Console.WriteLine($"Smoothing:    Forecast = {smForecast}, MAD = {smMad}, MAPE = {smMape:F2}%");
+        }
+        catch (Exception ex)
+        {
+            Console.Clear();
+            Console.WriteLine($"Something went wrong: {ex.Message}");
+            Console.WriteLine("Returning to main menu...");
+        }
     }
 }

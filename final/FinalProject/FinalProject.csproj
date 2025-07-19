@@ -8,5 +8,10 @@
     <Nullable>disable</Nullable> 
     <!-- is enabling allowed for project? -->
   </PropertyGroup>
+<ItemGroup>
+  <None Update="QtySold.csv">
+    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+  </None>
+</ItemGroup>
 
 </Project>
