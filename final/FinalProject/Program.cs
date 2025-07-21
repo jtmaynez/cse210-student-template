@@ -39,7 +39,7 @@ class Program
         }
     }
 
-    static void RunForecast()
+    public static void RunForecast()
     {
         try
         {
@@ -140,7 +140,7 @@ class Program
             Console.WriteLine("Returning to main menu...");
         }
     }
-   static void RunInventoryCalculator()
+    public static void RunInventoryCalculator()
     {
         try
         {
@@ -181,7 +181,7 @@ class Program
             Console.WriteLine("Returning to main menu...");
         }
     }
-    static void RunABCClassification()
+    public static void RunABCClassification()
     {
         var abc = new ABCClassifier();
 
